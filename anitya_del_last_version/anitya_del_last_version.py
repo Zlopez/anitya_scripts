@@ -20,16 +20,20 @@ def login(session, username, password):
         username (str): FAS username
         password (str): FAS password
     """
-    resp = session.get(LOGIN_URL + "login", allow_redirects=True)
+
+    resp = session.get(SERVER_URL + "login/fedora/")
+    bs = BS(resp.content, "html.parser")
+    payload = dict((tag["name"], tag["value"]) for tag in bs.find_all("input", type="hidden"))
+    resp = session.post(LOGIN_URL + "openid", data=payload)
+
+    resp = session.get(resp.url, allow_redirects=True)
     bs = BS(resp.content, "html.parser")
     payload = {
         "login_name": username,
         "login_password": password,
         "ipsilon_transaction_id": bs.find(id="ipsilon_transaction_id")["value"]
     }
-    session.post(LOGIN_URL + "login/fas", data=payload)
-
-    resp = session.get(SERVER_URL + "login/fedora")
+    resp = session.post(LOGIN_URL + "login/fas", data=payload)
     if resp.status_code == 200:
         print("Logged in")
 
@@ -68,7 +72,7 @@ def remove_latest_version(session, project):
         "confirm": "Yes"
     }
     resp = session.post(
-        SERVER_URL + "project/" + project + "/delete/" + latest_version, data=payload, allow_redirect=True
+        SERVER_URL + "project/" + project + "/delete/" + latest_version, data=payload
     )
     if resp.status_code == 200:
         print("Version '{}' deleted on project '{}'. URL: '{}'".format(
