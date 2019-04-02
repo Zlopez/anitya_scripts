@@ -1,6 +1,16 @@
 #!/usr/bin/env python3
+"""
+This script will allow you to remove latest version from projects
+specified by id in PROJECTS_FILE. One id per line. This is useful
+when you need to detect latest version again on some projects to
+trigger the-new-hotness.
 
-import sys
+**Example file**:
+    12345
+    12345
+
+"""
+
 import getpass
 
 import requests
@@ -58,14 +68,12 @@ def remove_latest_version(session, project):
     bs = BS(resp.content, "html.parser")
     latest_version = bs.find("div", property="doap:release").string
     resp = session.get(SERVER_URL + "project/" + project + "/delete/" + latest_version, cookies=session.cookies)
-    #print(resp.content)
     if resp.status_code != 200:
         print("ERROR: Version '{}' not found on project '{}'. URL: '{}'".format(
             latest_version, project, SERVER_URL + "project/" + project + "/delete/" + latest_version)
         )
         return
     bs = BS(resp.content, "html.parser")
-    #print(session.cookies)
     csrf_token = bs.find("input", id="csrf_token")["value"]
     payload = {
         "csrf_token": csrf_token,
@@ -85,7 +93,7 @@ def remove_latest_version(session, project):
 
 
 if __name__ ==  "__main__":
-    project = []
+    projects = []
     with open(PROJECTS_FILE, "r") as f:
         projects = f.readlines()
 
