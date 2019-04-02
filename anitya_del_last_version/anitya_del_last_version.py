@@ -66,7 +66,12 @@ def remove_latest_version(session, project):
         print("ERROR: Project '{}' not found. URL: '{}'".format(project, SERVER_URL + "project/" + project))
         return
     bs = BS(resp.content, "html.parser")
-    latest_version = bs.find("div", property="doap:release").string
+    try:
+        latest_version_row = bs.findAll("tr", property="doap:release")[0]
+        latest_version = latest_version_row.findAll("td")[2].string
+    except IndexError:
+        print("ERROR: No version found on {}".format(SERVER_URL + "project/" + project))
+        return
     resp = session.get(SERVER_URL + "project/" + project + "/delete/" + latest_version, cookies=session.cookies)
     if resp.status_code != 200:
         print("ERROR: Version '{}' not found on project '{}'. URL: '{}'".format(
@@ -74,7 +79,11 @@ def remove_latest_version(session, project):
         )
         return
     bs = BS(resp.content, "html.parser")
-    csrf_token = bs.find("input", id="csrf_token")["value"]
+    try:
+        csrf_token = bs.find("input", id="csrf_token")["value"]
+    except AttributeError:
+        print("ERROR: CSRF token not found. Something is wrong")
+        return
     payload = {
         "csrf_token": csrf_token,
         "confirm": "Yes"
@@ -104,4 +113,4 @@ if __name__ ==  "__main__":
     with requests.Session() as r_session:
         login(r_session, username, password)
         for project in projects:
-            remove_latest_version(r_session, project)
+            remove_latest_version(r_session, project.strip())

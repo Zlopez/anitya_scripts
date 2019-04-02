@@ -57,7 +57,6 @@ def get_project_id(project):
     """
     result = None
     if not project:
-        print("Project name is empty")
         return result
 
     params = {
@@ -82,12 +81,12 @@ if __name__ ==  "__main__":
     with open(PACKAGES_FILE, "r") as f:
         packages = f.readlines()
 
-    project_ids = []
+    project_ids = set()
     for package in packages:
-        project_name = get_project_name(package)
+        project_name = get_project_name(package.strip())
         project_id = get_project_id(project_name)
         if project_id:
-            project_ids.append(project_id)
+            project_ids.add(project_id)
 
     for project_id in project_ids:
         print(project_id)
