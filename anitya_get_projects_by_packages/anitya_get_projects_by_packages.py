@@ -8,12 +8,14 @@ package.
     0ad
     python-requests
 """
+import time
 
 import requests
 
 
 PACKAGES_FILE = "packages"
 SERVER_URL = "https://stg.release-monitoring.org/"
+WAIT_TIME = 0.5
 
 
 def get_project_name(package):
@@ -83,8 +85,16 @@ if __name__ ==  "__main__":
 
     project_ids = set()
     for package in packages:
-        project_name = get_project_name(package.strip())
-        project_id = get_project_id(project_name)
+        checked = False
+        while not checked:
+            try:
+                project_name = get_project_name(package.strip())
+                project_id = get_project_id(project_name)
+            except requests.ConnectionError:
+                print("Connection error occurred, waiting for '{}' second before retry".format(
+                    WAIT_TIME
+                ))
+                time.sleep(WAIT_TIME)
         if project_id:
             project_ids.add(project_id)
 

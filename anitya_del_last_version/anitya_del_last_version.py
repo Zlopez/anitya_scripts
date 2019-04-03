@@ -12,6 +12,7 @@ trigger the-new-hotness.
 """
 
 import getpass
+import time
 
 import requests
 from bs4 import BeautifulSoup as BS
@@ -19,6 +20,7 @@ from bs4 import BeautifulSoup as BS
 PROJECTS_FILE = "projects"
 SERVER_URL = "https://stg.release-monitoring.org/"
 LOGIN_URL = "https://id.fedoraproject.org/"
+WAIT_TIME = 0.5
 
 
 def login(session, username, password):
@@ -113,4 +115,12 @@ if __name__ ==  "__main__":
     with requests.Session() as r_session:
         login(r_session, username, password)
         for project in projects:
-            remove_latest_version(r_session, project.strip())
+            checked = False
+            while not checked:
+                try:
+                    remove_latest_version(r_session, project.strip())
+                except requests.ConnectionError:
+                    print("Connection error occurred, waiting for '{}' second before retry".format(
+                        WAIT_TIME
+                    ))
+                    time.sleep(WAIT_TIME)
