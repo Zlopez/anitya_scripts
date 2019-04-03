@@ -90,6 +90,7 @@ if __name__ ==  "__main__":
             try:
                 project_name = get_project_name(package.strip())
                 project_id = get_project_id(project_name)
+                checked = True
             except requests.ConnectionError:
                 print("Connection error occurred, waiting for '{}' second before retry".format(
                     WAIT_TIME

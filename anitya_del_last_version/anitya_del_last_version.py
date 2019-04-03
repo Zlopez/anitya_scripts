@@ -119,6 +119,7 @@ if __name__ ==  "__main__":
             while not checked:
                 try:
                     remove_latest_version(r_session, project.strip())
+                    checked = True
                 except requests.ConnectionError:
                     print("Connection error occurred, waiting for '{}' second before retry".format(
                         WAIT_TIME
