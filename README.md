@@ -11,3 +11,7 @@ Script for receiving project ids in Anitya for list of packages.
 
 ## anitya_get_projects_by_ecosystem
 Script for receiving project ids in Anitya for specific ecosystem.
+
+## anitya_get_packages_by_partial_name
+Script for receiving packages names in Anitya by partial name of the package. For example,
+it will allow you to find all packages ending with "-delete".
