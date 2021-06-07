@@ -69,7 +69,7 @@ def _request_anitya_packages_page(page):
         for item in response_dict["items"]:
             packages_list.append(item)
     else:
-        print("ERROR: Wrong arguments for request")
+        print("ERROR: Wrong arguments for request '{}'".format(resp.url))
 
     return packages_list
 
@@ -123,7 +123,7 @@ def get_project_id(project):
         else:
             print("Package '{}' not found".format(project))
     else:
-        print("ERROR: Wrong arguments for request")
+        print("ERROR: Wrong arguments for request '{}'".format(resp.url))
 
     return result
 
@@ -145,7 +145,7 @@ if __name__ ==  "__main__":
         if project_id:
             package["project_id"] = project_id
 
-    for package in filter_packages:
+    for package in filtered_packages:
         if GENERATE_DELTE_URL:
             print(
                 "{}/project/{}/delete/{}/{}".format(
