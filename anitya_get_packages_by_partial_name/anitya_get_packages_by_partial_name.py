@@ -12,7 +12,7 @@ GENERATE_DELTE_URL = True
 # List of partial names to look for
 PARTIAL_NAMES = ["-delete"]
 # Anitya URL to use
-SERVER_URL = "https://release-monitoring.org/"
+SERVER_URL = "http://localhost:5000/"
 # Number of items to request per page
 # Let's use maximum page size, so we don't do too much requests
 ITEMS_PER_PAGE = 250
@@ -148,8 +148,8 @@ if __name__ ==  "__main__":
     for package in filtered_packages:
         if GENERATE_DELTE_URL:
             print(
-                "{}/project/{}/delete/{}/{}".format(
-                    SERVER_URL, package["project_id"], package["distribution"], package["name"])
+                "{}project/{}/delete/{}/{}".format(
+                    SERVER_URL, package["project_id"], package["distribution"].replace(" ", "%20"), package["name"])
             )
         else:
             print("{};{};{}".format(package["project_id"], package["distribution"], package["name"]))
