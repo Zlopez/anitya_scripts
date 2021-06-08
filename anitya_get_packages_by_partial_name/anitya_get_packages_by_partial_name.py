@@ -12,7 +12,7 @@ GENERATE_DELTE_URL = True
 # List of partial names to look for
 PARTIAL_NAMES = ["-delete"]
 # Anitya URL to use
-SERVER_URL = "http://localhost:5000/"
+SERVER_URL = "https://release-monitoring.org/"
 # Number of items to request per page
 # Let's use maximum page size, so we don't do too much requests
 ITEMS_PER_PAGE = 250
@@ -42,7 +42,8 @@ def get_all_packages():
                     WAIT_TIME
                 ))
                 time.sleep(WAIT_TIME)
-            request_failure = False
+            else:
+                request_failure = False
         if len(packages_list_page) < ITEMS_PER_PAGE:
             run = False
         packages_list = packages_list + packages_list_page
@@ -64,6 +65,7 @@ def _request_anitya_packages_page(page):
         "page": page
     }
     resp = requests.get(SERVER_URL + "api/v2/packages", params=params)
+    #print(resp.url)
     if resp.status_code == 200:
         response_dict = resp.json()
         for item in response_dict["items"]:
@@ -115,6 +117,7 @@ def get_project_id(project):
         "name": project
     }
     resp = requests.get(SERVER_URL + "api/v2/projects", params=params)
+    #print(resp.url)
     if resp.status_code == 200:
         response_dict = resp.json()
         if response_dict["items"]:
@@ -136,12 +139,13 @@ if __name__ ==  "__main__":
         while not checked:
             try:
                 project_id = get_project_id(package["project"])
-                checked = True
             except requests.ConnectionError:
                 print("Connection error occurred, waiting for '{}' second before retry".format(
                     WAIT_TIME
                 ))
                 time.sleep(WAIT_TIME)
+            else:
+                checked = True
         if project_id:
             package["project_id"] = project_id
 
