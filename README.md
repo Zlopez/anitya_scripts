@@ -15,3 +15,6 @@ Script for receiving project ids in Anitya for specific ecosystem.
 ## anitya_get_packages_by_partial_name
 Script for receiving packages names in Anitya by partial name of the package. For example,
 it will allow you to find all packages ending with "-delete".
+
+## anitya_get_new_releases_for_infra_apps
+Script for receiving new updates for apps managed by Fedora Infrastructure/Releng team.
