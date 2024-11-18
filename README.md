@@ -18,3 +18,6 @@ it will allow you to find all packages ending with "-delete".
 
 ## anitya_get_new_releases_for_infra_apps
 Script for receiving new updates for apps managed by Fedora Infrastructure/Releng team.
+
+## set_monitoring_on_distgit
+This script is enabling monitoring for packages monitored by Anitya in dist-git
